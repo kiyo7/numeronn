@@ -5,10 +5,12 @@ const remainTurn = document.getElementById('remainTurn');
 
 let eat = 0;
 let bite = 0;
+let judgeCount = 0;
 
 let cpuNum = [];
 let answer = [];
-// let Duplicate = new Set();
+
+let comp = [];
 
  //** ランダムな整数0〜9生成 **//
 function randomNum () {
@@ -42,7 +44,11 @@ console.log(Num())//答えの数字出力（今だけ）
 numCheck.addEventListener('click', function() {
     answer = (answerNum.value).split('').map(Number);
     check(answer);
-    judge();
+    let comp = [cpuNum, answer];
+    console.log(comp)
+    judge(comp);
+
+    eval(); //結果をアラートする関数を作れ 
 })
 
 // ** 入力されたテキストの判定 **//
@@ -57,13 +63,31 @@ function check(text) {
     } 
 }
 //**　答えと比較・判定 **//
-function judge() {
-    if (cpuNum.toString() === answer.toString()) {
-        eat = 3;
+function judge(x) {
+    if (x[0][0] === x[1][0]){
+        eat += 1;
+    } else if (x[0][0] === x[1][1] || x[0][0] === x[1][2]) {
+        bite += 1;
+    }
+    if (x[0][1] === x[1][1]) {
+        eat += 1; 
+    } else if (x[0][1] === x[1][0] || x[0][1] === x[1][2]) {
+        bite += 1;
+    }
+    if (x[0][2] === x[1][2]) {
+        eat += 1;
+    } else if (x[0][2] === x[1][0] || x[0][2] === x[1][1]) {
+        bite += 1;
+    }
+}
+//**結果をアラートする関数 **/
+function eval() {
+    if (eat === 3) {
         alert(`${eat}EAT\n正解です！`);
         location.reload();
     } else {
-
+        alert(`${eat}EAT\n${bite}BITE`);
     }
-};
-
+    eat = 0;
+    bite = 0;
+}
