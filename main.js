@@ -1,17 +1,17 @@
 //** 初期化　定義 **//
-const answerNum  = document.getElementById('answerNum');
-const numCheck   = document.getElementById('numCheck');
-const remainTurn = document.getElementById('remainTurn');
-
+const answerNum   = document.getElementById('answerNum');
+const numCheck    = document.getElementById('numCheck');
+const remainTurn  = document.getElementById('remainTurn');
+const remainScore = document.getElementById('remainScore');
 let eat = 0;
 let bite = 0;
 
 let cpuNum = [];
 let answer = [];
 
-let turn  = 10;
+let turn  = 1;
 let score = 1000;
-let comp  = [];
+let compare  = [];
 let count = 0;
 
  //** ランダムな整数0〜9生成 **//
@@ -35,6 +35,8 @@ function num() {
 }
 
 num();
+remainTurn.textContent  = `現在のターン数：${turn}ターン`
+remainScore.textContent = `あなたの得点：${score}点`
 //**検証ツールでカンニング可能**/
 console.log(cpuNum[0],cpuNum[1], cpuNum[2])
 
@@ -49,8 +51,8 @@ function existsSameValue(array){
 numCheck.addEventListener('click', function() {
     answer = (answerNum.value).split('').map(Number);
     check(answer);
-    comp = [cpuNum, answer];
-    judge(comp);
+    compare = [cpuNum, answer];
+    judge(compare);
     eval();
     })
 
@@ -71,8 +73,8 @@ function judge(x) {
         if (x[0][i] === x[1][i]){
             eat += 1;
         } 
-    comp = cpuNum.concat(answer);
-    let count = new Set(comp).size;
+    compare = cpuNum.concat(answer);
+    let count = new Set(compare).size;
     bite = 6 - count - eat; 
     }
 }
@@ -81,16 +83,18 @@ function eval() {
     if (eat === 3) {
         alert(`${eat}EAT\n正解です！`);
         score += 1000;
-        alert(`あなたのスコアは${score}です`)
+        alert(`あなたの得点は${score}点です\nクリアターン数${turn}\nおめでとうございます`)
         location.reload();
     } else {
         alert(`${eat}EAT\n${bite}BITE`);
-        turn -= 1;
+        turn += 1;
         score -= 200;
-        if (turn === 0) {
+        remainTurn.textContent = `現在のターン数：${turn}`
+        remainScore.textContent= `あなたの得点：${score}`
+        if (turn === 10) {
             alert('あなたの負けです')
             score -= 1000;
-            alert(`あなたのスコアは${score}です`)
+            alert(`あなたの得点は${score}点です`)
             location.reload();
         }
     }
