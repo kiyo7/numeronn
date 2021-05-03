@@ -5,12 +5,14 @@ const remainTurn = document.getElementById('remainTurn');
 
 let eat = 0;
 let bite = 0;
-let judgeCount = 0;
 
 let cpuNum = [];
 let answer = [];
 
-let comp = [];
+let turn  = 10;
+let score = 1000;
+let comp  = [];
+let count = 0;
 
  //** ランダムな整数0〜9生成 **//
 function randomNum () {
@@ -18,7 +20,7 @@ function randomNum () {
 };
 
 //** 3桁被らないよう生成→配列に格納 **//
-function Num() {
+function num() {
     cpuNum[0] = (randomNum());
     cpuNum[1] = (randomNum());
     cpuNum[2] = (randomNum());
@@ -32,24 +34,25 @@ function Num() {
     return cpuNum;
 }
 
-/** 配列内で値が重複してないか調べる **/
+num();
+//**検証ツールでカンニング可能**/
+console.log(cpuNum[0],cpuNum[1], cpuNum[2])
+
+/** ユーザーのテキスト値が重複してないか調べる **/
 function existsSameValue(array){
-    let Duplicate = new Set(array);
-    return Duplicate.size == array.length;
+    let duplicate = new Set(array);
+    return duplicate.size == array.length;
   }
 
-console.log(Num())//答えの数字出力（今だけ）
 
 //** 答え合わせを押した時 **//
 numCheck.addEventListener('click', function() {
     answer = (answerNum.value).split('').map(Number);
     check(answer);
-    let comp = [cpuNum, answer];
-    console.log(comp)
+    comp = [cpuNum, answer];
     judge(comp);
-
-    eval(); //結果をアラートする関数を作れ 
-})
+    eval();
+    })
 
 // ** 入力されたテキストの判定 **//
 function check(text) {
@@ -64,29 +67,32 @@ function check(text) {
 }
 //**　答えと比較・判定 **//
 function judge(x) {
-    if (x[0][0] === x[1][0]){
-        eat += 1;
-    } else if (x[0][0] === x[1][1] || x[0][0] === x[1][2]) {
-        bite += 1;
-    }
-    if (x[0][1] === x[1][1]) {
-        eat += 1; 
-    } else if (x[0][1] === x[1][0] || x[0][1] === x[1][2]) {
-        bite += 1;
-    }
-    if (x[0][2] === x[1][2]) {
-        eat += 1;
-    } else if (x[0][2] === x[1][0] || x[0][2] === x[1][1]) {
-        bite += 1;
+    for (let i = 0; i < 3; i++) {
+        if (x[0][i] === x[1][i]){
+            eat += 1;
+        } 
+    comp = cpuNum.concat(answer);
+    let count = new Set(comp).size;
+    bite = 6 - count - eat; 
     }
 }
-//**結果をアラートする関数 **/
+//**結果をアラートする **/
 function eval() {
     if (eat === 3) {
         alert(`${eat}EAT\n正解です！`);
+        score += 1000;
+        alert(`あなたのスコアは${score}です`)
         location.reload();
     } else {
         alert(`${eat}EAT\n${bite}BITE`);
+        turn -= 1;
+        score -= 200;
+        if (turn === 0) {
+            alert('あなたの負けです')
+            score -= 1000;
+            alert(`あなたのスコアは${score}です`)
+            location.reload();
+        }
     }
     eat = 0;
     bite = 0;
